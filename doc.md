@@ -1,11 +1,11 @@
-# HTML5 Speedtest
+# LibreSpeed
 
 > by Federico Dossena  
-> Version 5.0
-> [https://github.com/adolfintel/speedtest/](https://github.com/adolfintel/speedtest/)
+> Version 5.1
+> [https://github.com/librespeed/speedtest/](https://github.com/librespeed/speedtest/)
 
 ## Introduction
-HTML5 Speedtest is a Free and Open Source speedtest that you can host on your server(s), and users can run in their browser.
+LibreSpeed is a Free and Open Source speedtest that you can host on your server(s), and users can run in their browser.
 
 __Features:__
 * Download test
@@ -101,6 +101,8 @@ To enable ID obfuscation, edit `results/telemetry_settings.php` and set `$enable
 
 __Important:__ ID obfuscation currently only works on 64-bit PHP!
 
+While you're editing `results/telemetry_settings.php`, you might want to set `$redact_ip_addresses` to `true`, this way, all IP addresses will be removed from the telemetry for better privacy. This is disabled by default.
+
 ##### Seeing the results
 A basic front-end for visualizing and searching tests by ID is available in `results/stats.php`.
 
@@ -108,11 +110,16 @@ A login is required to access the interface. __Important__: change the default p
 
 #### The end
 Now that the test is installed, rename one of the examples to `index.html` and delete the other examples.  
-The best starting point for most people is `example-singleServer-pretty.html`. If you want to use telemetry and results sharing, use `example-singleServer-full.html` instead.
+The best starting point for most people is `example-singleServer-gauges.html`. If you want to use telemetry and results sharing, use `example-singleServer-full.html` instead.
 
 If you're not using telemetry and results sharing, you can delete the `results` folder too.
 
-Details about the examples and how to make custom UIs will be discussed later.
+Details about the examples and how to make custom UIs will be discussed later. If you don't want to make a custom UI, feel free to modify the example and replace "LibreSpeed Example" with the name of your test.
+
+#### Privacy
+Telemetry contains personal information (according to GDPR defintion), therefore it is important to treat this data respectfully of national and international laws, especially if you plan to offer the service in the European Union.
+
+`example-singleServer-full.html` and `example-multipleServers-full.html` both contain a privacy policy for the service: you MUST read it, change it if necessary, and add your email address for data deletion requests. __Failure to comply with GDPR regulations can get you in serious trouble.__
 
 ### Multiple servers, PHP
 The speedtest can automatically choose between multiple test points and use the one with the lowest ping in a list.
@@ -319,7 +326,7 @@ __Main parameters:__
     * Default: `getIP.php`
     * __Important:__ path is relative to js file
 * __url_telemetry__: path to telemetry.php or replacement
-    * Default: `telemetry/telemetry.php`
+    * Default: `results/telemetry.php`
     * __Important:__ path is relative to js file
 	* __Note:__ you can ignore this parameter if you're not using the telemetry
 * __telemetry_level__: The type of telemetry to use. See the telemetry section for more info about this
@@ -360,7 +367,6 @@ __Advanced parameters:__ (Seriously, don't change these unless you know what you
 * __xhr_ulMultistream__: how many streams should be opened for the upload test
     * Default: `3`
     * Recommended: `>=1`
-    * Default override: 1 on Firefox if enable_quirks is true
 * __xhr_ul_blob_megabytes__: size in megabytes of the blobs sent during the upload test
 	* Default: `20`
 	* Default override: 4 on Chromium-based mobile browsers (limitation introduced around version 65). This will be forced

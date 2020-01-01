@@ -1,7 +1,7 @@
 /*
-	HTML5 Speedtest - Main
+	LibreSpeed - Main
 	by Federico Dossena
-	https://github.com/adolfintel/speedtest/
+	https://github.com/librespeed/speedtest/
 	GNU LGPLv3 License
 */
 
@@ -49,7 +49,7 @@ function Speedtest() {
   this._settings = {}; //settings for the speedtest worker
   this._state = 0; //0=adding settings, 1=adding servers, 2=server selection done, 3=test running, 4=done
   console.log(
-    "HTML5 Speedtest by Federico Dossena v5.0 - https://github.com/adolfintel/speedtest"
+    "LibreSpeed by Federico Dossena v5.1 - https://github.com/librespeed/speedtest"
   );
 }
 
@@ -72,6 +72,9 @@ Speedtest.prototype = {
     if (this._state != 0)
       throw "You cannot change the test settings after adding server or starting the test";
     this._settings[parameter] = value;
+    if(parameter === "temeletry_extra"){
+        this._originalExtra=this._settings.telemetry_extra;
+    }
   },
   /**
    * Used internally to check if a server object contains all the required elements.
@@ -319,10 +322,10 @@ Speedtest.prototype = {
         this._selectedServer.server + this._selectedServer.pingURL;
       this._settings.url_getIp =
         this._selectedServer.server + this._selectedServer.getIpURL;
-      if (typeof this._settings.telemetry_extra !== "undefined") {
+      if (typeof this._originalExtra !== "undefined") {
         this._settings.telemetry_extra = JSON.stringify({
           server: this._selectedServer.name,
-          extra: this._settings.telemetry_extra
+          extra: this._originalExtra
         });
       } else
         this._settings.telemetry_extra = JSON.stringify({
