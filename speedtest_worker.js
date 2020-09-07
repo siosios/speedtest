@@ -122,9 +122,9 @@ this.addEventListener("message", function(e) {
 				if (typeof settings[key] !== "undefined") settings[key] = s[key];
 				else twarn("Unknown setting ignored: " + key);
 			}
+			var ua = navigator.userAgent;
 			// quirks for specific browsers. apply only if not overridden. more may be added in future releases
 			if (settings.enable_quirks || (typeof s.enable_quirks !== "undefined" && s.enable_quirks)) {
-				var ua = navigator.userAgent;
 				if (/Firefox.(\d+\.\d+)/i.test(ua)) {
 					if (typeof s.ping_allowPerformanceApi === "undefined") {
 						// ff performance API sucks
@@ -523,7 +523,7 @@ function ulTest(done) {
 						xhr[i].send(req);
 					}
 				}.bind(this),
-				1
+				delay
 			);
 		}.bind(this);
 		// open streams

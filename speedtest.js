@@ -49,7 +49,7 @@ function Speedtest() {
   this._settings = {}; //settings for the speedtest worker
   this._state = 0; //0=adding settings, 1=adding servers, 2=server selection done, 3=test running, 4=done
   console.log(
-    "LibreSpeed by Federico Dossena v5.1 - https://github.com/librespeed/speedtest"
+    "LibreSpeed by Federico Dossena v5.2.1 - https://github.com/librespeed/speedtest"
   );
 }
 
@@ -72,7 +72,7 @@ Speedtest.prototype = {
     if (this._state != 0)
       throw "You cannot change the test settings after adding server or starting the test";
     this._settings[parameter] = value;
-    if(parameter === "temeletry_extra"){
+    if(parameter === "telemetry_extra"){
         this._originalExtra=this._settings.telemetry_extra;
     }
   },
@@ -126,6 +126,40 @@ Speedtest.prototype = {
    */
   addTestPoints: function(list) {
     for (var i = 0; i < list.length; i++) this.addTestPoint(list[i]);
+  },
+  /**
+   * Load a JSON server list from URL (multiple points of test)
+   * url: the url where the server list can be fetched. Must be an array with objects containing the following elements:
+   *  {
+   *       "name": "User friendly name",
+   *       "server":"http://yourBackend.com/",   URL to your server. You can specify http:// or https://. If your server supports both, just write // without the protocol
+   *       "dlURL":"garbage.php"   path to garbage.php or its replacement on the server
+   *       "ulURL":"empty.php"   path to empty.php or its replacement on the server
+   *       "pingURL":"empty.php"   path to empty.php or its replacement on the server. This is used to ping the server by this selector
+   *       "getIpURL":"getIP.php"   path to getIP.php or its replacement on the server
+   *   }
+   * result: callback to be called when the list is loaded correctly. An array with the loaded servers will be passed to this function, or null if it failed
+   */
+  loadServerList: function(url,result) {
+    if (this._state == 0) this._state = 1;
+    if (this._state != 1) throw "You can't add a server after server selection";
+    this._settings.mpot = true;
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function(){
+      try{
+        var servers=JSON.parse(xhr.responseText);
+        for(var i=0;i<servers.length;i++){
+          this._checkServerDefinition(servers[i]);
+        }
+        this.addTestPoints(servers);
+        result(servers);
+      }catch(e){
+        result(null);
+      }
+    }.bind(this);
+    xhr.onerror = function(){result(null);}
+    xhr.open("GET",url);
+    xhr.send();
   },
   /**
    * Returns the selected server (multiple points of test)
