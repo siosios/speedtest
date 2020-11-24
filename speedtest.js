@@ -49,7 +49,7 @@ function Speedtest() {
   this._settings = {}; //settings for the speedtest worker
   this._state = 0; //0=adding settings, 1=adding servers, 2=server selection done, 3=test running, 4=done
   console.log(
-    "LibreSpeed by Federico Dossena v5.2.1 - https://github.com/librespeed/speedtest"
+    "LibreSpeed by Federico Dossena v5.2.2 - https://github.com/librespeed/speedtest"
   );
 }
 
@@ -69,8 +69,8 @@ Speedtest.prototype = {
    * Invalid values or nonexistant parameters will be ignored by the speedtest worker.
    */
   setParameter: function(parameter, value) {
-    if (this._state != 0)
-      throw "You cannot change the test settings after adding server or starting the test";
+    if (this._state == 3)
+      throw "You cannot change the test settings while running the test";
     this._settings[parameter] = value;
     if(parameter === "telemetry_extra"){
         this._originalExtra=this._settings.telemetry_extra;
@@ -330,13 +330,13 @@ Speedtest.prototype = {
         console.error("Speedtest onupdate event threw exception: " + e);
       }
       if (data.testState >= 4) {
+	  clearInterval(this.updater);
+        this._state = 4;
         try {
           if (this.onend) this.onend(data.testState == 5);
         } catch (e) {
           console.error("Speedtest onend event threw exception: " + e);
         }
-        clearInterval(this.updater);
-        this._state = 4;
       }
     }.bind(this);
     this.updater = setInterval(

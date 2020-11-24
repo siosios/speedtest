@@ -42,7 +42,7 @@ A template to build an Android client for your LibreSpeed installation is availa
 Please see the `docker` branch
 
 ## Go backend
-A Go implementation is available in the `go` branch, maintained by [Maddie Zhan](https://github.com/maddie).
+A Go implementation is available in the [`speedtest-go`](https://github.com/librespeed/speedtest-go) repo, maintained by [Maddie Zhan](https://github.com/maddie).
 
 ## Node.js backend
 A partial Node.js implementation is available in the `node` branch, developed by [dunklesToast](https://github.com/dunklesToast). It's not recommended to use at the moment.
