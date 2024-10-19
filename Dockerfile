@@ -1,7 +1,7 @@
 FROM php:8-apache
 
 # Install extensions
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
@@ -10,6 +10,12 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql pdo_pgsql pgsql \
+    && rm -f /usr/src/php.tar.xz /usr/src/php.tar.xz.asc \
+    && apt-get remove -y libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libpq-dev \
+    && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Prepare files and folders
