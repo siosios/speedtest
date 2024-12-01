@@ -243,7 +243,7 @@ function startRenderingLoop() {
 
   const buttonTexts = {
     [INITIALIZING]: "Loading...",
-    [READY]: "Let's start baby",
+    [READY]: "Let's start",
     [RUNNING]: "Abort",
     [FINISHED]: "Restart",
   };
