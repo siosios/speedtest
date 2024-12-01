@@ -96,7 +96,7 @@ function startButtonClickHandler() {
  * Event listener for clicks on the "Copy link" button in the modal
  */
 async function copyLinkButtonClickHandler() {
-  const link = document.querySelector("#share img").src;
+  const link = document.querySelector("img#results").src;
   await navigator.clipboard.writeText(link);
   const button = document.querySelector("#copy-link");
   button.classList.add("active");
