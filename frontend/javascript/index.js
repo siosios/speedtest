@@ -173,7 +173,6 @@ async function applyServerListJSON() {
 function populateDropdown(servers) {
   const serverSelector = document.querySelector("div.server-selector");
   const serverList = serverSelector.querySelector("ul.servers");
-  serverSelector.classList.add("active");
 
   // If we have only a single server, just show it
   if (servers.length === 1) {
@@ -181,6 +180,7 @@ function populateDropdown(servers) {
     selectServer(servers[0]);
     return;
   }
+  serverSelector.classList.add("active");
 
   // Make the dropdown open and close
   serverSelector.addEventListener("click", () => {
