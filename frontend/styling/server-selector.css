@@ -32,8 +32,8 @@
       content: "";
       position: absolute;
       display: block;
-      width: 32;
-      height: 32;
+      width: 32px;
+      height: 32px;
       right: 1.8rem;
       top: 1rem;
     }
