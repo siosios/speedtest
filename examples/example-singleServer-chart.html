@@ -35,11 +35,82 @@
             display: block;
             margin: 0 auto;
         }
+
+	.theme-switch-wrapper {
+        margin: 20px;
+      }
+
+      .theme-switch {
+        display: inline-block;
+        height: 40px;
+        position: relative;
+        width: 65px;
+      }
+
+      .theme-switch input {
+        display: none;
+      }
+
+      .slider {
+        background: #000;
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 13px;
+        transition: 0.4s;
+      }
+
+      .slider p:after {
+        color: #fff;
+        float: right;
+        margin: 0 5px 0 0;
+        content: "OFF";
+        transition: 0.4s;
+      }
+
+      input:checked + .slider p:after {
+        float: left;
+        color: #000;
+        content: "ON";
+        margin: 0 0 0 5px;
+      }
+
+      .slider:before {
+        background: #fff;
+        top: 8px;
+        content: "";
+        height: 26px;
+        left: 4px;
+        position: absolute;
+        transition: 0.4s;
+        width: 26px;
+      }
+
+      input:checked + .slider {
+        background-color: #fff;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(28px);
+        background: #000;
+      }
+
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script> <!--THIS LIBRARY SUCKS!-->
     <script src="speedtest.js"></script>
     <script type="text/javascript">
-        var s = null
+        var s = null;
+        var xAxesColor='#000';
+        var yAxesColor='#000';
         function runTest() {
             var chart1ctx = document.getElementById('chart1Area').getContext('2d')
             var chart2ctx = document.getElementById('chart2Area').getContext('2d')
