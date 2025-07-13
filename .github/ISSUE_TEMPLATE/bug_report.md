@@ -24,5 +24,5 @@ Browser, OS, type of connection, unusual software, ...
 What should have happened
 
 ## Screenshots
-If necessary, add screenshots of the test.
+If necessary, add screenshots of the test. 
 F12 > Network screenshots can be particularly useful

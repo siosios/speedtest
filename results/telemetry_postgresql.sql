@@ -15,14 +15,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -68,7 +68,7 @@ CREATE SEQUENCE speedtest_users_id_seq
     CACHE 1;
 
 -- Commented out the following line because it assumes the user of the speedtest server, @bplower
--- ALTER TABLE speedtest_users_id_seq OWNER TO speedtest;
+-- ALTER TABLE speedtest_users_id_seq OWNER TO speedtest; 
 
 --
 -- Name: speedtest_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: speedtest

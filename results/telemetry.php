@@ -2,9 +2,8 @@
 
 require 'telemetry_settings.php';
 require_once 'telemetry_db.php';
-require_once '../backend/getIP_util.php';
 
-$ip = getClientIp();
+$ip = $_SERVER['REMOTE_ADDR'];
 $ispinfo = $_POST['ispinfo'];
 $extra = $_POST['extra'];
 $ua = $_SERVER['HTTP_USER_AGENT'];

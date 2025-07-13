@@ -6,15 +6,15 @@
 */
 
 /*
-   This is the main interface between your webpage and the speed test.
-   It hides the speed test web worker to the page, and provides many convenient functions to control the test.
-
+   This is the main interface between your webpage and the speedtest.
+   It hides the speedtest web worker to the page, and provides many convenient functions to control the test.
+   
    The best way to learn how to use this is to look at the basic example, but here's some documentation.
-
+  
    To initialize the test, create a new Speedtest object:
-    let s=new Speedtest();
+    var s=new Speedtest();
    Now you can think of this as a finite state machine. These are the states (use getState() to see them):
-   - 0: here you can change the speed test settings (such as test duration) with the setParameter("parameter",value) method. From here you can either start the test using start() (goes to state 3) or you can add multiple test points using addTestPoint(server) or addTestPoints(serverList) (goes to state 1). Additionally, this is the perfect moment to set up callbacks for the onupdate(data) and onend(aborted) events.
+   - 0: here you can change the speedtest settings (such as test duration) with the setParameter("parameter",value) method. From here you can either start the test using start() (goes to state 3) or you can add multiple test points using addTestPoint(server) or addTestPoints(serverList) (goes to state 1). Additionally, this is the perfect moment to set up callbacks for the onupdate(data) and onend(aborted) events.
    - 1: here you can add test points. You only need to do this if you want to use multiple test points.
         A server is defined as an object like this:
         {
@@ -27,16 +27,16 @@
         }
         While in state 1, you can only add test points, you cannot change the test settings. When you're done, use selectServer(callback) to select the test point with the lowest ping. This is asynchronous, when it's done, it will call your callback function and move to state 2. Calling setSelectedServer(server) will manually select a server and move to state 2.
     - 2: test point selected, ready to start the test. Use start() to begin, this will move to state 3
-    - 3: test running. Here, your onupdate event callback will be called periodically, with data coming from the worker about speed and progress. A data object will be passed to your onupdate function, with the following items:
-            - dlStatus: download speed in Mbit/s
-            - ulStatus: upload speed in Mbit/s
+    - 3: test running. Here, your onupdate event calback will be called periodically, with data coming from the worker about speed and progress. A data object will be passed to your onupdate function, with the following items:
+            - dlStatus: download speed in mbps
+            - ulStatus: upload speed in mbps
             - pingStatus: ping in ms
             - jitterStatus: jitter in ms
             - dlProgress: progress of the download test as a float 0-1
             - ulProgress: progress of the upload test as a float 0-1
             - pingProgress: progress of the ping/jitter test as a float 0-1
             - testState: state of the test (-1=not started, 0=starting, 1=download test, 2=ping+jitter test, 3=upload test, 4=finished, 5=aborted)
-            - clientIp: IP address of the client performing the test (and optionally ISP and distance)
+            - clientIp: IP address of the client performing the test (and optionally ISP and distance) 
         At the end of the test, the onend function will be called, with a boolean specifying whether the test was aborted or if it ended normally.
         The test can be aborted at any time with abort().
         At the end of the test, it will move to state 4
@@ -46,10 +46,10 @@
 function Speedtest() {
   this._serverList = []; //when using multiple points of test, this is a list of test points
   this._selectedServer = null; //when using multiple points of test, this is the selected server
-  this._settings = {}; //settings for the speed test worker
+  this._settings = {}; //settings for the speedtest worker
   this._state = 0; //0=adding settings, 1=adding servers, 2=server selection done, 3=test running, 4=done
   console.log(
-    "LibreSpeed by Federico Dossena v5.4.1 - https://github.com/librespeed/speedtest"
+    "LibreSpeed by Federico Dossena v5.2.4 - https://github.com/librespeed/speedtest"
   );
 }
 
@@ -66,7 +66,7 @@ Speedtest.prototype = {
    * - parameter: string with the name of the parameter that you want to set
    * - value: new value for the parameter
    *
-   * Invalid values or nonexistant parameters will be ignored by the speed test worker.
+   * Invalid values or nonexistant parameters will be ignored by the speedtest worker.
    */
   setParameter: function(parameter, value) {
     if (this._state == 3)
@@ -125,7 +125,7 @@ Speedtest.prototype = {
    * Same as addTestPoint, but you can pass an array of servers
    */
   addTestPoints: function(list) {
-    for (let i = 0; i < list.length; i++) this.addTestPoint(list[i]);
+    for (var i = 0; i < list.length; i++) this.addTestPoint(list[i]);
   },
   /**
    * Load a JSON server list from URL (multiple points of test)
@@ -144,11 +144,11 @@ Speedtest.prototype = {
     if (this._state == 0) this._state = 1;
     if (this._state != 1) throw "You can't add a server after server selection";
     this._settings.mpot = true;
-    let xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     xhr.onload = function(){
       try{
-        const servers=JSON.parse(xhr.responseText);
-        for(let i=0;i<servers.length;i++){
+        var servers=JSON.parse(xhr.responseText);
+        for(var i=0;i<servers.length;i++){
           this._checkServerDefinition(servers[i]);
         }
         this.addTestPoints(servers);
@@ -193,27 +193,27 @@ Speedtest.prototype = {
     if (this._selectServerCalled) throw "selectServer already called"; else this._selectServerCalled=true;
     /*this function goes through a list of servers. For each server, the ping is measured, then the server with the function selected is called with the best server, or null if all the servers were down.
      */
-    const select = function(serverList, selected) {
+    var select = function(serverList, selected) {
       //pings the specified URL, then calls the function result. Result will receive a parameter which is either the time it took to ping the URL, or -1 if something went wrong.
-      const PING_TIMEOUT = 2000;
-      let USE_PING_TIMEOUT = true; //will be disabled on unsupported browsers
+      var PING_TIMEOUT = 2000;
+      var USE_PING_TIMEOUT = true; //will be disabled on unsupported browsers
       if (/MSIE.(\d+\.\d+)/i.test(navigator.userAgent)) {
         //IE11 doesn't support XHR timeout
         USE_PING_TIMEOUT = false;
       }
-      const ping = function(url, rtt) {
+      var ping = function(url, rtt) {
         url += (url.match(/\?/) ? "&" : "?") + "cors=true";
-        let xhr = new XMLHttpRequest();
-        let t = new Date().getTime();
+        var xhr = new XMLHttpRequest();
+        var t = new Date().getTime();
         xhr.onload = function() {
           if (xhr.responseText.length == 0) {
             //we expect an empty response
-            let instspd = new Date().getTime() - t; //rough timing estimate
+            var instspd = new Date().getTime() - t; //rough timing estimate
             try {
               //try to get more accurate timing using performance API
-              let p = performance.getEntriesByName(url);
+              var p = performance.getEntriesByName(url);
               p = p[p.length - 1];
-              let d = p.responseStart - p.requestStart;
+              var d = p.responseStart - p.requestStart;
               if (d <= 0) d = p.duration;
               if (d > 0 && d < instspd) instspd = d;
             } catch (e) {}
@@ -234,14 +234,14 @@ Speedtest.prototype = {
       }.bind(this);
 
       //this function repeatedly pings a server to get a good estimate of the ping. When it's done, it calls the done function without parameters. At the end of the execution, the server will have a new parameter called pingT, which is either the best ping we got from the server or -1 if something went wrong.
-      const PINGS = 3, //up to 3 pings are performed, unless the server is down...
+      var PINGS = 3, //up to 3 pings are performed, unless the server is down...
         SLOW_THRESHOLD = 500; //...or one of the pings is above this threshold
-      const checkServer = function(server, done) {
-        let i = 0;
+      var checkServer = function(server, done) {
+        var i = 0;
         server.pingT = -1;
         if (server.server.indexOf(location.protocol) == -1) done();
         else {
-          const nextPing = function() {
+          var nextPing = function() {
             if (i++ == PINGS) {
               done();
               return;
@@ -261,10 +261,10 @@ Speedtest.prototype = {
         }
       }.bind(this);
       //check servers in list, one by one
-      let i = 0;
-      const done = function() {
-        let bestServer = null;
-        for (let i = 0; i < serverList.length; i++) {
+      var i = 0;
+      var done = function() {
+        var bestServer = null;
+        for (var i = 0; i < serverList.length; i++) {
           if (
             serverList[i].pingT != -1 &&
             (bestServer == null || serverList[i].pingT < bestServer.pingT)
@@ -273,7 +273,7 @@ Speedtest.prototype = {
         }
         selected(bestServer);
       }.bind(this);
-      const nextServer = function() {
+      var nextServer = function() {
         if (i == serverList.length) {
           done();
           return;
@@ -284,17 +284,17 @@ Speedtest.prototype = {
     }.bind(this);
 
     //parallel server selection
-    const CONCURRENCY = 6;
-    let serverLists = [];
-    for (let i = 0; i < CONCURRENCY; i++) {
+    var CONCURRENCY = 6;
+    var serverLists = [];
+    for (var i = 0; i < CONCURRENCY; i++) {
       serverLists[i] = [];
     }
-    for (let i = 0; i < this._serverList.length; i++) {
+    for (var i = 0; i < this._serverList.length; i++) {
       serverLists[i % CONCURRENCY].push(this._serverList[i]);
     }
-    let completed = 0;
-    let bestServer = null;
-    for (let i = 0; i < CONCURRENCY; i++) {
+    var completed = 0;
+    var bestServer = null;
+    for (var i = 0; i < CONCURRENCY; i++) {
       select(
         serverLists[i],
         function(server) {
@@ -323,7 +323,7 @@ Speedtest.prototype = {
     this.worker.onmessage = function(e) {
       if (e.data === this._prevData) return;
       else this._prevData = e.data;
-      const data = JSON.parse(e.data);
+      var data = JSON.parse(e.data);
       try {
         if (this.onupdate) this.onupdate(data);
       } catch (e) {
